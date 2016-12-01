@@ -62,7 +62,7 @@ public static void main(String[] args) {
 
     switch (option) {
       case 1:
-        System.out.println("Give the message to cipher\n");
+        System.out.println("Give the message to cipher");
         M = keyboard.nextInt();
         result = cipher(M, e, n);
         System.out.println("Message ciphered: " + result + "\n");
