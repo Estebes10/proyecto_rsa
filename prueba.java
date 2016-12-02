@@ -98,12 +98,12 @@ public class prueba {
   }
 
   public static int fnFindE(int a){
-      int iCount;
-      iCount=2;
-      while(iCount<a){
-          if(a%iCount!=0)
-              return iCount;
-          iCount++;
+      int cont;
+      cont=2;
+      while(cont<a){
+          if(a%cont!=0)
+              return cont;
+          cont++;
       }
       return 0;
   }
@@ -150,7 +150,7 @@ public class prueba {
 
 	public static void main(String[] args) {
 		/*Declaracion de variables*/
-		int p = 0, q = 0, n = 0, e = 0, phi = 0, result = 0, C = 0, M = 0, min = 2, max = 0, d = 0, count = 0;
+		int p = 0, q = 0, n = 0, e = 0, phi = 0, result = 0, M = 0, min = 2, max = 0, d = 0;
 		double g = 0;
 		long result_decipher = 0;
 		//Objeto teclado
@@ -180,7 +180,7 @@ public class prueba {
   		result_decipher = decipher(result, d, n);
   		System.out.println("Mensaje decifrado: " + result_decipher);
     }else{
-        System.out.println("Error! Enter two prime numbers!");
+        System.out.println("Error! Ingresa dos numeros primos!");
     }
 	}
 }
