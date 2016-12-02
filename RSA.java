@@ -8,8 +8,9 @@ public class RSA {
 		return y == 0 ? x : gcd(y, x % y);
 	}
 
-	public static double multiplicative_inverse(double e, double phi) {
-		double d = 0, x = 0, y = 0, x1 = 0, x2 = 1, y1 = 1, temp_phi = phi, temp1 = 0, temp2 = 0;
+	//Extended Euclidean algorithm
+	public static int multiplicative_inverse(int e, int phi) {
+		int d = 0, x = 0, y = 0, x1 = 0, x2 = 1, y1 = 1, temp_phi = phi, temp1 = 0, temp2 = 0;
 
 		while (e > 0) {
 			temp1 = temp_phi / e;
@@ -26,15 +27,15 @@ public class RSA {
 			y1 = y;
 		}
 
+		/*
+		System.out.println("d: " + d);
+		System.out.println("phi: " + phi);
+		*/
 
-
-		if (temp_phi == 1) {
-			return d + phi;
-		} else {
-			return d = 3;
-		}
+		return d;
 	}
 
+  //encripted function
 	public static int cipher(int M, int e, int n){
 		int PM = 0, exp = 0;
 		exp = (int) Math.pow(M, e);
@@ -50,6 +51,7 @@ public class RSA {
 		return PM;
 	}
 
+  //decripted function
 	public static long decipher(int C, int d, int n){
 		long SC = 0, exp = 0;
 		exp = (long) Math.pow(C, d);
@@ -67,7 +69,7 @@ public class RSA {
 
 	public static void main(String[] args) {
 		/*Declaration of variables */
-		int p = 0, q = 0, n = 0, e = 0, phi = 0, option = 0, result = 0, C = 0, M = 0, min = 0, max = 0, d = 0;
+		int p = 0, q = 0, n = 0, e = 0, phi = 0, option = 0, result = 0, C = 0, M = 0, min = 2, max = 0, d = 0, count = 0;
 		double g = 0;
 		long result_decipher = 0;
 
@@ -89,32 +91,34 @@ public class RSA {
 		//Range for e variable
 		max = phi;
 
-		//Generate a random int
-		e = ThreadLocalRandom.current().nextInt(min, max + 1);
+		//If d is negative the Euclidean algorithm doesn't work
+		while (d <= 0) {
 
-		e = 7;
+			//Until pass Euclidean algorithm
+			while (g != 1) {
+				e = ThreadLocalRandom.current().nextInt(min, max + 1);
+				g = gcd(e, phi);
+			}
 
-		//Check if e is a prime number
-		g = gcd(e, phi);
+			d = multiplicative_inverse(e, phi);
 
-		//Until get a prime number
-		while (g != 1) {
-			e = ThreadLocalRandom.current().nextInt(min, max + 1);
-			g = gcd(e, phi);
+			count++;
+
+			if(count > 60) {
+				System.out.println("Error with \"d\", is negative! Try again!");
+				option = 3;
+				break;
+			}
 		}
 
-		d = (int) multiplicative_inverse(e, phi);
-
-		System.out.println(d);
-
-
+		/*
 		System.out.println("phi: " + phi);
 		System.out.println("p: " + p);
 		System.out.println("q: " + q);
 		System.out.println("d: " + d);
 		System.out.println("e: " + e);
 		System.out.println("n: " + n);
-
+		*/
 
 		while (option != 3) {
 			System.out.println("Menu\n1. Cipher a message.\n2. Decipher a message.\n3. Exit.\nOption?");
@@ -125,18 +129,19 @@ public class RSA {
 				System.out.println("Give the message to cipher");
 				M = keyboard.nextInt();
 				result = cipher(M, e, n);
-				System.out.println(result);
+				System.out.println("Message ciphered: " + result);
 				break;
 
 			case 2:
 				System.out.println("Give the message to decipher");
 				C = keyboard.nextInt();
 				result_decipher = decipher(C, d, n);
-				System.out.println(result_decipher);
+				System.out.println("Message deciphered: " + result_decipher);
 				break;
 
 			case 3:
-				System.out.println("Bye :)");
+				System.out.println("Bye");
+				break;
 
 			default:
 				System.out.println("Choose a valid option");
