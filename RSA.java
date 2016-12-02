@@ -1,88 +1,147 @@
 import java.util.Scanner;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RSA {
 
-public static int cipher(int M, int e, int n){
-  int PM = 0, exp = 0;
-  exp = (int) Math.pow(M, e);
-  PM = exp % n;
-  System.out.println("\tVariables into cipher function");
-  System.out.println("\texp: " + exp);
-  System.out.println("\tC: " + M);
-  System.out.println("\tn: " + n);
-  System.out.println("\td: " + e);
-  return PM;
-}
+	//Euclidean algorithm
+	public static int gcd(int x, int y) {
+		return y == 0 ? x : gcd(y, x % y);
+	}
 
-public static long decipher(int C, int d, int n){
-  long SC = 0, exp = 0;
-  exp = (long) Math.pow(C, d);
-  SC = exp % n;
-  System.out.println("\tVariables into cipher function");
-  System.out.println("\texp: " + exp);
-  System.out.println("\tC: " + C);
-  System.out.println("\tn: " + n);
-  System.out.println("\td: " + d);
-  return SC;
-}
+	public static double multiplicative_inverse(double e, double phi) {
+		double d = 0, x = 0, y = 0, x1 = 0, x2 = 1, y1 = 1, temp_phi = phi, temp1 = 0, temp2 = 0;
 
-public static void main(String[] args) {
-  int p = 0, q = 0, n = 0, e = 0, tetha = 0, option = 0, result = 0, C = 0, M = 0;
-  double d = 0, modulo = 0;
-  long result_decipher = 0;
+		while (e > 0) {
+			temp1 = temp_phi / e;
+			temp2 = temp_phi - temp1 * e;
+			temp_phi = e;
+			e = temp2;
 
-  Scanner keyboard = new Scanner(System.in);
+			x = x2 - temp1 * x1;
+			y = d - temp1 * y1;
 
-  System.out.println("Give me p");
-  p = keyboard.nextInt();
+			x2 = x1;
+			x1 = x;
+			d = y1;
+			y1 = y;
+		}
 
-  System.out.println("Give me q");
-  q = keyboard.nextInt();
 
-  n = p * q;
-  tetha = (p - 1) * (q - 1);
 
-  System.out.println("Give me e");
-  e = keyboard.nextInt();
+		if (temp_phi == 1) {
+			return d + phi;
+		} else {
+			return d = 3;
+		}
+	}
 
-  modulo = e % tetha;
+	public static int cipher(int M, int e, int n){
+		int PM = 0, exp = 0;
+		exp = (int) Math.pow(M, e);
+		PM = exp % n;
 
-  d = 1 / modulo;
+		/*
+		System.out.println("exp: " + exp);
+		System.out.println("C: " + M);
+		System.out.println("n: " + n);
+		System.out.println("d: " + e);
+		*/
 
-  System.out.println("tetha: " + tetha);
-  System.out.println("p: " + p);
-  System.out.println("q: " + q);
-  System.out.println("d: " + d);
-  System.out.println("e: " + e);
-  System.out.println("n: " + n);
+		return PM;
+	}
 
-  while (option != 3) {
-    System.out.println("Menu\n1. Cipher a message.\n2. Decipher a message.\n3. Exit.\nOption?");
-    option = keyboard.nextInt();
+	public static long decipher(int C, int d, int n){
+		long SC = 0, exp = 0;
+		exp = (long) Math.pow(C, d);
+		SC = exp % n;
 
-    switch (option) {
-      case 1:
-        System.out.println("Give the message to cipher");
-        M = keyboard.nextInt();
-        result = cipher(M, e, n);
-        System.out.println("Message ciphered: " + result + "\n");
-      break;
+		/*
+		System.out.println("exp: " + exp);
+		System.out.println("C: " + C);
+		System.out.println("n: " + n);
+		System.out.println("d: " + d);
+		*/
 
-      case 2:
-        System.out.println("Give the message to decipher\n");
-        C = keyboard.nextInt();
-        result_decipher = decipher(C, e, n);
-        System.out.println(result_decipher);
-      break;
+		return SC;
+	}
 
-      case 3:
-        System.out.println("Bye\n");
-      break;
+	public static void main(String[] args) {
+		/*Declaration of variables */
+		int p = 0, q = 0, n = 0, e = 0, phi = 0, option = 0, result = 0, C = 0, M = 0, min = 0, max = 0, d = 0;
+		double g = 0;
+		long result_decipher = 0;
 
-      default:
-        System.out.println("Choose a valid option\n");
-      break;
-      }
-    }
-  }
+		//Keyboard
+		Scanner keyboard = new Scanner(System.in);
+
+		/* Ask for prime numbers */
+		System.out.println("Give me p");
+		p = keyboard.nextInt();
+		System.out.println("Give me q");
+		q = keyboard.nextInt();
+
+		//Get n
+		n = p * q;
+
+		//Get phi
+		phi = (p - 1) * (q - 1);
+
+		//Range for e variable
+		max = phi;
+
+		//Generate a random int
+		e = ThreadLocalRandom.current().nextInt(min, max + 1);
+
+		e = 7;
+
+		//Check if e is a prime number
+		g = gcd(e, phi);
+
+		//Until get a prime number
+		while (g != 1) {
+			e = ThreadLocalRandom.current().nextInt(min, max + 1);
+			g = gcd(e, phi);
+		}
+
+		d = (int) multiplicative_inverse(e, phi);
+
+		System.out.println(d);
+
+
+		System.out.println("phi: " + phi);
+		System.out.println("p: " + p);
+		System.out.println("q: " + q);
+		System.out.println("d: " + d);
+		System.out.println("e: " + e);
+		System.out.println("n: " + n);
+
+
+		while (option != 3) {
+			System.out.println("Menu\n1. Cipher a message.\n2. Decipher a message.\n3. Exit.\nOption?");
+			option = keyboard.nextInt();
+
+			switch (option) {
+			case 1:
+				System.out.println("Give the message to cipher");
+				M = keyboard.nextInt();
+				result = cipher(M, e, n);
+				System.out.println(result);
+				break;
+
+			case 2:
+				System.out.println("Give the message to decipher");
+				C = keyboard.nextInt();
+				result_decipher = decipher(C, d, n);
+				System.out.println(result_decipher);
+				break;
+
+			case 3:
+				System.out.println("Bye :)");
+
+			default:
+				System.out.println("Choose a valid option");
+				break;
+			}
+		}
+	}
 }
